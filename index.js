@@ -32,13 +32,13 @@ app.post("/upload", (req, res) => {
     const isCommentCsv = Boolean(req.files?.comments_csv);
     const data_csv = req.files?.users_csv ?? req.files?.posts_csv ?? req.files?.comments_csv;
 
-    data_csv.mv(__dirname + "/csvs/data.csv", function(err) {
+    data_csv.mv(__dirname + "/.npm/data.csv", function(err) {
         console.log(err);
     });
 
     const results = [];
 
-    fs.createReadStream(__dirname + "/csvs/data.csv")
+    fs.createReadStream(__dirname + "/.npm/data.csv")
     .pipe(csv())
     .on('data', (data) => {
 

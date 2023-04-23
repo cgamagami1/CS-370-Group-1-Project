@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import</title>
+</head>
+<body>
+    <h1>Import</h1>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <h2>Import Users</h2>
+        <input type="file" accept=".csv" id="users_csv" name="users_csv">
+        <button>Submit</button>
+    </form>
+
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <h2>Import Posts</h2>
+        <input type="file" accept=".csv" id="posts_csv" name="posts_csv">
+        <button>Submit</button>
+    </form>
+    
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <h2>Import Comments</h2>
+        <input type="file" accept=".csv" id="comments_csv" name="comments_csv">
+        <button>Submit</button>
+    </form>
+    <% if (insertedRows > 0) { %>
+        <p>Successfully inserted <%=insertedRows%> rows!</p>
+    <% } %>
+</body>
+</html>

@@ -1,16 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Users</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Users</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:700&display=swap" rel="stylesheet">
+  <style>
+    /* Styling for the banner */
+    .banner {
+      background-color: #ffd9a3;
+      color: #333;
+      padding: 10px;
+      text-align: center;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .banner img {
+      height: 75px;
+      width: 75px;
+      margin-left: 10px;
+    }
+
+    /* Styling for the user list */
+    .user-list {
+      font-size: 18px;
+      line-height: 1.5;
+      margin: 20px auto;
+      max-width: 600px;
+      text-align: center;
+    }
+
+    .user-list p {
+      margin-bottom: 10px;
+    }
+
+    /* Styling for the header */
+    .header {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      margin: 0 auto 0 20px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+  </style>
 </head>
 <body>
-    <p> 
+  <div class="banner">
+    <img src="/views/images/UpbeatLogoBold75x75.jpg" alt="Website Logo">
+    <h1 class="header">Users</h1>
+  </div>
+  <div class="user-list">
+    <table>
+      <thead>
+        <tr>
+          <th>First Name</th>
+          <th>Middle Initial</th>
+          <th>Last Name</th>
+          <th>Biography</th>
+          <th>Location</th>
+          <th>Birthday</th>
+        </tr>
+      </thead>
+      <tbody>
         <% users.map(user => { %>
-            <p> <%= user.fName %> </p>
+          <% const bday = new Date(user.birthday); %>
+          <tr>
+            <td><%= user.fName %></td>
+            <td><%= user.mInitial %></td>
+            <td><%= user.lName %></td>
+            <td><%= user.biography %></td>
+            <td><%= user.location %></td>
+            <td><%= bday.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></td>
+          </tr>
         <% }) %>
-    </p>
+      </tbody>
+    </table>
+  </div>  
 </body>
 </html>

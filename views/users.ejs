@@ -133,6 +133,39 @@
           <td><%= user.location %></td>
           <td><%= user.birthday.toDateString().slice(4, 16) %></td>
         </tr>
+        <% if (posts.find(post => post.userID === user.userID)) { %>
+            <tr>
+                <td></td>
+                <td colspan="9">
+                    <table>
+                        <tr>
+                            <th>Post ID</th>
+                            <th>Like Count</th>
+                            <th>Location</th>
+                            <th>Content</th>
+                            <th>Photo URL</th>
+                            <th>Date</th>
+                            <th>Event ID</th>
+                            <th>Group ID</th>
+                            <th>Trend ID</th>
+                        </tr>
+                        <% posts.filter(post => post.userID === user.userID).map(post => { %>
+                            <tr>
+                                <td><%= post.postID %></td>
+                                <td><%= post.likeCount %></td>
+                                <td><%= post.location %></td>
+                                <td><%= post.content %></td>
+                                <td><%= post.photoURL %></td>
+                                <td><%= post.date %></td>
+                                <td><%= post.eventID %></td>
+                                <td><%= post.groupID %></td>
+                                <td><%= post.trendID %></td>
+                            </tr>
+                        <% }) %>
+                    </table>
+                </td>
+            </tr>
+        <% } %>
       <% }) %>
     </tbody>
   </table>

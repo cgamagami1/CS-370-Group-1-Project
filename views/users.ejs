@@ -8,6 +8,15 @@
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700&display=swap" rel="stylesheet">
   <style>
     /* Styling for the banner */
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    a {
+      color: #333;
+    }
+
     .banner {
       background-color: #ffd9a3;
       color: #333;
@@ -60,49 +69,48 @@
     }
 
     /* Styling for the user table */
-.user-table {
-  border-collapse: collapse;
-  margin: 20px auto;
-  max-width: 900px;
-  text-align: center;
-  font-family: Helvetica, sans-serif;
-  background-color: #69a6e7;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add a box shadow to create depth */
-  border-radius: 10px; /* Add rounded corners */
-  overflow: hidden; /* Hide anything that overflows the table */
-}
+    .user-table {
+      border-collapse: collapse;
+      margin: 20px auto;
+      max-width: 900px;
+      text-align: center;
+      font-family: Helvetica, sans-serif;
+      background-color: #69a6e7;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add a box shadow to create depth */
+      border-radius: 10px; /* Add rounded corners */
+      overflow: hidden; /* Hide anything that overflows the table */
+    }
 
-/* Styling for the table rows */
-.user-table tr {
-  background-color: #fff; /* Set the background color for the rows */
-}
+    /* Styling for the table rows */
+    .user-table tr {
+      background-color: #fff; /* Set the background color for the rows */
+    }
 
-/* Styling for the table header row */
-.user-table th {
-  background-color: #f1f1f1; /* Set the background color for the header row */
-}
+    /* Styling for the table header row */
+    .user-table th {
+      background-color: #f1f1f1; /* Set the background color for the header row */
+    }
 
-/* Styling for the table cells */
-.user-table td {
-  padding: 10px;
-}
+    /* Styling for the table cells */
+    .user-table td {
+      padding: 10px;
+    }
 
-/* Styling for the table border */
-.user-table td, .user-table th {
-  border: 1px solid #ddd;
-}
+    /* Styling for the table border */
+    .user-table td, .user-table th {
+      border: 1px solid #ddd;
+    }
 
-/* Add a margin to the blue background */
-.user-table-wrapper {
-  background-color: #c5d7e8;
-  padding: 20px;
-}
-
+    /* Add a margin to the blue background */
+    .user-table-wrapper {
+      background-color: #c5d7e8;
+      padding: 20px;
+    }
   </style>
 </head>
 <body>
   <div class="banner">
-    <img src="/views/images/UpbeatLogoBold75x75.jpg" alt="Website Logo">
+    <img src="UpbeatLogoBold75x75.jpg" alt="Website Logo">
     <h1 class="header">Users</h1>
     <div class="navigation">
         <a class="navigation-item" href="http://localhost:3000/import">IMPORT</a>

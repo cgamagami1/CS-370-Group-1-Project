@@ -26,7 +26,7 @@ app.post("/import", async (req, res) => {
     const isCommentCsv = Boolean(req.files?.comments_csv);
 
     if (!isUserCsv && !isPostCsv && !isCommentCsv) {
-        res.render("/import", {errors: ["No CSV has been uploaded"]});
+        res.render("import", { insertedRows: 0, errors: ["No CSV has been uploaded"] });
         return;
     }
 
@@ -52,7 +52,7 @@ app.post("/import", async (req, res) => {
         }
         else if (isPostCsv) {
             query = "INSERT INTO post (likeCount, location, content, photoURL, userID, date, eventID, groupID, trendID) VALUES (?)";
-            input = [d.likeCount, d.locatoin, d.content, d.photoURL, d.userID, d.date, d.eventID, d.groupID, d.trendID];
+            input = [d.likeCount, d.location, d.content, d.photoURL, d.userID, d.date, d.eventID, d.groupID, d.trendID];
         }
         else if (isCommentCsv) {
             query = "INSERT INTO comment (userID, content, numLikes, date, postID) VALUES (?)";

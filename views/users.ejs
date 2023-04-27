@@ -8,6 +8,15 @@
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700&display=swap" rel="stylesheet">
   <style>
     /* Styling for the banner */
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    a {
+      color: #333;
+    }
+
     .banner {
       background-color: #ffd9a3;
       color: #333;
@@ -22,19 +31,6 @@
       height: 75px;
       width: 75px;
       margin-left: 10px;
-    }
-
-    /* Styling for the user list */
-    .user-list {
-      font-size: 18px;
-      line-height: 1.5;
-      margin: 20px auto;
-      max-width: 600px;
-      text-align: center;
-    }
-
-    .user-list p {
-      margin-bottom: 10px;
     }
 
     /* Styling for the header */
@@ -60,115 +56,116 @@
     }
 
     /* Styling for the user table */
-.user-table {
-  border-collapse: collapse;
-  margin: 20px auto;
-  max-width: 900px;
-  text-align: center;
-  font-family: Helvetica, sans-serif;
-  background-color: #69a6e7;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add a box shadow to create depth */
-  border-radius: 10px; /* Add rounded corners */
-  overflow: hidden; /* Hide anything that overflows the table */
-}
+    table {
+      border-collapse: collapse;
+      margin: 20px auto;
+      max-width: 900px;
+      text-align: center;
+      font-family: Helvetica, sans-serif;
+      background-color: #69a6e7;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add a box shadow to create depth */
+      border-radius: 10px; /* Add rounded corners */
+      overflow: hidden; /* Hide anything that overflows the table */
+    }
 
-/* Styling for the table rows */
-.user-table tr {
-  background-color: #fff; /* Set the background color for the rows */
-}
+    /* Styling for the table rows */
+    table tr {
+      background-color: #fff; /* Set the background color for the rows */
+    }
 
-/* Styling for the table header row */
-.user-table th {
-  background-color: #f1f1f1; /* Set the background color for the header row */
-}
+    /* Styling for the table header row */
+    table th {
+      background-color: #f1f1f1; /* Set the background color for the header row */
+    }
 
-/* Styling for the table cells */
-.user-table td {
-  padding: 10px;
-}
+    /* Styling for the table cells */
+    table td {
+      padding: 10px;
+    }
 
-/* Styling for the table border */
-.user-table td, .user-table th {
-  border: 1px solid #ddd;
-}
+    /* Styling for the table border */
+    table td, table th {
+      border: 1px solid #ddd;
+    }
 
-/* Add a margin to the blue background */
-.user-table-wrapper {
-  background-color: #c5d7e8;
-  padding: 20px;
-}
-
+    /* Add a margin to the blue background */
+    .table-wrapper {
+      background-color: #c5d7e8;
+      padding: 20px;
+    }
   </style>
 </head>
 <body>
   <div class="banner">
-    <img src="/views/images/UpbeatLogoBold75x75.jpg" alt="Website Logo">
+    <img src="UpbeatLogoBold75x75.jpg" alt="Website Logo">
     <h1 class="header">Users</h1>
     <div class="navigation">
-        <a class="navigation-item" href="http://localhost:3000/import">IMPORT</a>
-        <a class="navigation-item" href="http://localhost:3000/users">USERS</a>
-        <a class="navigation-item" href="http://localhost:3000/comments">COMMENTS</a>
-        <a class="navigation-item" href="http://localhost:3000/posts">POSTS</a>
-      </div>
+      <a class="navigation-item" href="http://localhost:3000/import">IMPORT</a>
+      <a class="navigation-item" href="http://localhost:3000/users">USERS</a>
+      <a class="navigation-item" href="http://localhost:3000/posts">POSTS</a>
+      <a class="navigation-item" href="http://localhost:3000/comments">COMMENTS</a>
+    </div>
   </div>
-  <div class="user-table-wrapper">
-  <table class="user-table">
-    <thead>
-      <tr>
-        <th>First Name</th>
-        <th>Middle Initial</th>
-        <th>Last Name</th>
-        <th>Biography</th>
-        <th>Location</th>
-        <th>Birthday</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% users.map(user => { %>
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
         <tr>
-          <td><%= user.fName %></td>
-          <td><%= user.mInitial %></td>
-          <td><%= user.lName %></td>
-          <td><%= user.biography %></td>
-          <td><%= user.location %></td>
-          <td><%= user.birthday.toDateString().slice(4, 16) %></td>
+          <th>User ID</th>
+          <th>First Name</th>
+          <th>Middle Initial</th>
+          <th>Last Name</th>
+          <th>Biography</th>
+          <th>Location</th>
+          <th>Birthday</th>
         </tr>
-        <% if (posts.find(post => post.userID === user.userID)) { %>
-            <tr>
-                <td></td>
-                <td colspan="9">
-                    <table>
-                        <tr>
-                            <th>Post ID</th>
-                            <th>Like Count</th>
-                            <th>Location</th>
-                            <th>Content</th>
-                            <th>Photo URL</th>
-                            <th>Date</th>
-                            <th>Event ID</th>
-                            <th>Group ID</th>
-                            <th>Trend ID</th>
-                        </tr>
-                        <% posts.filter(post => post.userID === user.userID).map(post => { %>
-                            <tr>
-                                <td><%= post.postID %></td>
-                                <td><%= post.likeCount %></td>
-                                <td><%= post.location %></td>
-                                <td><%= post.content %></td>
-                                <td><%= post.photoURL %></td>
-                                <td><%= post.date %></td>
-                                <td><%= post.eventID %></td>
-                                <td><%= post.groupID %></td>
-                                <td><%= post.trendID %></td>
-                            </tr>
-                        <% }) %>
-                    </table>
-                </td>
-            </tr>
-        <% } %>
-      <% }) %>
-    </tbody>
-  </table>
-</div>
+      </thead>
+      <tbody>
+        <% users.map(user => { %>
+          <tr>
+            <td><%= user.userID %></td>
+            <td><%= user.fName %></td>
+            <td><%= user.mInitial %></td>
+            <td><%= user.lName %></td>
+            <td><%= user.biography %></td>
+            <td><%= user.location %></td>
+            <td><%= user.birthday.toDateString().slice(4, 16) %></td>
+          </tr>
+          <% if (posts.find(post => post.userID === user.userID)) { %>
+              <tr>
+                  <td></td>
+                  <td colspan="9">
+                      <table>
+                          <tr>
+                              <th>Post ID</th>
+                              <th>Like Count</th>
+                              <th>Location</th>
+                              <th>Content</th>
+                              <th>Photo URL</th>
+                              <th>Date</th>
+                              <th>Event ID</th>
+                              <th>Group ID</th>
+                              <th>Trend ID</th>
+                          </tr>
+                          <% posts.filter(post => post.userID === user.userID).map(post => { %>
+                              <tr>
+                                  <td><%= post.postID %></td>
+                                  <td><%= post.likeCount %></td>
+                                  <td><%= post.location %></td>
+                                  <td><%= post.content %></td>
+                                  <td><%= post.photoURL %></td>
+                                  <td><%= post.date %></td>
+                                  <td><%= post.eventID %></td>
+                                  <td><%= post.groupID %></td>
+                                  <td><%= post.trendID %></td>
+                              </tr>
+                          <% }) %>
+                      </table>
+                  </td>
+              </tr>
+          <% } %>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
 </body>
 </html>

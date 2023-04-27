@@ -5,7 +5,110 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Import</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Helvetica, sans-serif;
+            font-size: 16px;
+            color: #333;
+            background-color: #fff;
+        }
+        
+        header {
+            background-color: #69a6e7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            height: 80px;
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        header a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 16px;
+            font-weight: normal;
+        }
+        
+        header a:hover {
+            color: #eee;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+        
+        th, td {
+            text-align: left;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: normal;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        
+        form {
+            margin-bottom: 30px;
+        }
+        
+        h1, h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        
+        button {
+            background-color: #69a6e7;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #5c98d9;
+        }
+        
+        p.success {
+            color: #008000;
+        }
+    </style>
 </head>
+<body>
+    <header>
+        <div>
+            <img src="UpbeatLogoBold75x75.jpg" alt="Website Logo" width="75" height="75">
+            <span>UPBEAT Data Import</span>
+        </div>
+        <nav>
+            <a href="http://localhost:3000/import">IMPORT</a>
+            <a href="http://localhost:3000/users">USERS</a>
+            <a href="http://localhost:3000/comments">COMMENTS</a>
+            <a href="http://localhost:3000/posts">POSTS</a>
+        </nav>
+    </header>
 <body>
     <h1>Import</h1>
     <form action="/upload" method="POST" enctype="multipart/form-data">

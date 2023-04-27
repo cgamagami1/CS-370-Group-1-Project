@@ -5,69 +5,113 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Import</title>
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:700&display=swap" rel="stylesheet">
     <style>
-    /* Styling for the banner */
-    body {
-      margin: 0;
-      padding: 0;
-    }
-
-    a {
-      color: #333;
-    }
-
-    .banner {
-      background-color: #ffd9a3;
-      color: #333;
-      padding: 10px;
-      text-align: center;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .banner img {
-      height: 75px;
-      width: 75px;
-      margin-left: 10px;
-    }
-
-    /* Styling for the header */
-    .header {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 36px;
-      font-weight: 700;
-      margin: 0 auto 0 20px;
-      text-align: center;
-      text-transform: uppercase;
-    }
-
-    /* Styling for the navigation */
-    .navigation {
-      display: flex;
-      align-items: center;
-    }
-
-    .navigation-item {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 18px;
-      margin-left: 20px;
-    }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Helvetica, sans-serif;
+            font-size: 16px;
+            color: #333;
+            background-color: #fff;
+        }
+        
+        header {
+            background-color: #69a6e7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            height: 80px;
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        header a {
+            color: #fff;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 16px;
+            font-weight: normal;
+        }
+        
+        header a:hover {
+            color: #eee;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+        
+        th, td {
+            text-align: left;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: normal;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        
+        form {
+            margin-bottom: 30px;
+        }
+        
+        h1, h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        
+        button {
+            background-color: #69a6e7;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #5c98d9;
+        }
+        
+        p.success {
+            color: #008000;
+        }
     </style>
 </head>
 <body>
-    <div class="banner">
-        <img src="UpbeatLogoBold75x75.jpg" alt="Website Logo">
-        <h1 class="header">Import</h1>
-        <div class="navigation">
-            <a class="navigation-item" href="http://localhost:3000/import">IMPORT</a>
-            <a class="navigation-item" href="http://localhost:3000/users">USERS</a>
-            <a class="navigation-item" href="http://localhost:3000/posts">POSTS</a>
-            <a class="navigation-item" href="http://localhost:3000/comments">COMMENTS</a>
+    <header>
+        <div>
+            <img src="UpbeatLogoBold75x75.jpg" alt="Website Logo" width="75" height="75">
+            <span>UPBEAT Data Import</span>
         </div>
-    </div>
-    <form action="/import" method="POST" enctype="multipart/form-data">
+        <nav>
+            <a href="http://localhost:3000/import">IMPORT</a>
+            <a href="http://localhost:3000/users">USERS</a>
+            <a href="http://localhost:3000/comments">COMMENTS</a>
+            <a href="http://localhost:3000/posts">POSTS</a>
+        </nav>
+    </header>
+<body>
+    <h1>Import</h1>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
         <h2>Import Users</h2>
         <input type="file" accept=".csv" id="users_csv" name="users_csv">
         <button>Submit</button>

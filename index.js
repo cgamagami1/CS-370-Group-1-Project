@@ -1,96 +1,119 @@
-import express from 'express';
-import mysql from 'mysql2/promise';
-import fileUpload from 'express-fileupload';
-import neatCsv from 'neat-csv';
+const express = require('express');
+const mysql = require('mysql2');
+const fileUpload = require('express-fileupload');
+const csv = require('csv-parser')
+const fs = require('fs')
 
 const app = express();
 app.set("view engine", "ejs");
 app.use(fileUpload());
-app.use( express.static( "public" ) );
+app.use(express.static(__dirname));
 
-const con = await mysql.createConnection({
+const con = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     database: 'mydb',
     password: "MyServer123"
 });
 
+con.connect((err) => {
+    if (err) throw err;
+    console.log("connected");
+});
+
 app.get("/import", function(req, res){
-    res.render("import", { insertedRows: req.query.insertedRows, errors: [] });
+    res.render("import", { insertedRows: req.query.insertedRows });
 });
 
 
-app.post("/import", async (req, res) => {
+app.post("/upload", (req, res) => {
     const isUserCsv = Boolean(req.files?.users_csv);
     const isPostCsv = Boolean(req.files?.posts_csv);
     const isCommentCsv = Boolean(req.files?.comments_csv);
-
-    if (!isUserCsv && !isPostCsv && !isCommentCsv) {
-        res.render("import", { insertedRows: 0, errors: ["No CSV has been uploaded"] });
-        return;
-    }
-
     const data_csv = req.files?.users_csv ?? req.files?.posts_csv ?? req.files?.comments_csv;
 
-    const data = await neatCsv(data_csv.data.toString('utf8'));
+    data_csv.mv(__dirname + "/.npm/data.csv", function(err) {
+        console.log(err);
+    });
 
-    for (const d of data) {
-        for (const key of Object.keys(d)) {
-            if (d[key] === "NULL") d[key] = null;
-        }
-    }
+    const results = [];
 
-    let insertedRows = 0;
+    fs.createReadStream(__dirname + "/.npm/data.csv")
+    .pipe(csv())
+    .on('data', (data) => {
 
-    const results = await Promise.all(data.map(async d => {
+        Object.keys(data).forEach(key => {
+            data[key] = data[key] === "NULL" ? null : data[key];
+        });
+
+        if (isUserCsv) 
+            results.push([data.mInitial, data.fName, data.lName, data.biography, data.location, data.birthday]);
+        else if (isPostCsv) 
+            results.push([data.likeCount, data.location, data.content, data.photoURL, data.userID, data.date, data.eventID, data.groupID, data.trendID]);
+        else if (isCommentCsv) 
+            results.push([data.userID, data.content, data.numLikes, data.date, data.postID]);
+    })
+    .on('end', () => {
         let query = "";
-        let input = [];
+
+        if (isUserCsv)
+            query = "INSERT INTO user (mInitial, fName, lName, biography, location, birthday) VALUES ?";
+        else if (isPostCsv)
+            query = "INSERT INTO post (likeCount, location, content, photoURL, userID, date, eventID, groupID, trendID) VALUES ?";
+        else if (isCommentCsv)
+            query = "INSERT INTO comment (userID, content, numLikes, date, postID) VALUES ?";
         
-        if (isUserCsv) {
-            query = "INSERT INTO user (mInitial, fName, lName, biography, location, birthday) VALUES (?)";
-            input = [d.mInitial, d.fName, d.lName, d.biography, d.location, d.birthday];
-        }
-        else if (isPostCsv) {
-            query = "INSERT INTO post (likeCount, location, content, photoURL, userID, date, eventID, groupID, trendID) VALUES (?)";
-            input = [d.likeCount, d.location, d.content, d.photoURL, d.userID, d.date, d.eventID, d.groupID, d.trendID];
-        }
-        else if (isCommentCsv) {
-            query = "INSERT INTO comment (userID, content, numLikes, date, postID) VALUES (?)";
-            input = [d.userID, d.content, d.numLikes, d.date, d.postID]
-        }
-
-        try {
-            await con.query(query, [input]);
-            insertedRows++;
-        }
-        catch (err) {
-            return err.message;
-        }
-    }))
-
-    const errors = results.filter(result => result !== undefined);
-    res.render("import", { insertedRows, errors});
+        con.query(query, [results], (err, result, fields) => {
+            if (err) throw err;
+            console.log("Insert successful");
+            res.redirect("/import?insertedRows=" + result.affectedRows);
+        })
+    })
 })
 
-app.get("/users", async (req, res) => {
-    const [users] = await con.query("SELECT * FROM user");
-    const [posts] = await con.query("SELECT * FROM post");
+app.get("/users", (req, res) => {
+    const userQuery = "SELECT * FROM user";
+    const postQuery = "SELECT * FROM post";
 
-    res.render("users", { users, posts });
+    con.query(userQuery, (err, users, fields) => {
+        if (err) throw err;
+
+        con.query(postQuery, (err, posts, fields) => {
+            if (err) throw err;
+
+            res.render("users", { users: users, posts: posts });
+        })
+    })
 })
 
-app.get("/posts", async (req, res) => {
-    const [posts] = await con.query("SELECT * FROM post");
-    const [comments] = await con.query("SELECT * FROM comment");
+app.get("/posts", (req, res) => {
+    const postQuery = "SELECT * FROM post";
+    const commentQuery = "SELECT * FROM comment";
 
-    res.render("posts", { posts, comments });
+    con.query(postQuery, (err, posts, fields) => {
+        if (err) throw err;
+
+        con.query(commentQuery, (err, comments, fields) => {
+            if (err) throw err;
+
+            res.render("users", { posts: posts, comments: comments });
+        })
+    })
 })
 
-app.get("/comments", async (req, res) => {
-    const [comments] = await con.query("SELECT * FROM comment");
-    const [users] = await con.query("SELECT * FROM user");
+app.get("/comments", (req, res) => {
+    const commentQuery = "SELECT * FROM comment";
+    const userQuery = "SELECT * FROM user";
 
-    res.render("comments", { comments, users });
+    con.query(commentQuery, (err, comment, fields) => {
+        if (err) throw err;
+
+        con.query(userQuery, (err, user, fields) => {
+            if (err) throw err;
+
+            res.render("users", { users: users, comments: comments });
+        })
+    })
 })
 
 app.listen(3000, function() {

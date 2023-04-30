@@ -16,7 +16,7 @@ const con = await mysql.createConnection({
 });
 
 app.get("/import", function(req, res){
-    res.render("import", { insertedRows: req.query.insertedRows, errors: [] });
+    res.render("import", { insertedRows: 0, updatedRows: 0, errors: [] });
 });
 
 
@@ -26,7 +26,7 @@ app.post("/import", async (req, res) => {
     const isCommentCsv = Boolean(req.files?.comments_csv);
 
     if (!isUserCsv && !isPostCsv && !isCommentCsv) {
-        res.render("import", { insertedRows: 0, errors: ["No CSV has been uploaded"] });
+        res.render("import", { insertedRows: 0, updatedRows: 0, errors: ["No CSV has been uploaded"] });
         return;
     }
 
@@ -41,27 +41,62 @@ app.post("/import", async (req, res) => {
     }
 
     let insertedRows = 0;
+    let updatedRows = 0;
 
     const results = await Promise.all(data.map(async d => {
         let query = "";
         let input = [];
+        let existingID = null;
         
         if (isUserCsv) {
-            query = "INSERT INTO user (mInitial, fName, lName, biography, location, birthday) VALUES (?)";
-            input = [d.mInitial, d.fName, d.lName, d.biography, d.location, d.birthday];
+            const [user] = await con.query("SELECT userID FROM user WHERE fName = ? AND mInitial = ? AND lName = ?", [d.fName, d.mInitial, d.lName]);
+            
+            if (user.length > 0) {
+                query = "UPDATE user SET ? WHERE userID = ?";
+                input = { mInitial: d.mInitial, fName: d.fName, lName: d.lName, biography: d.biography, location: d.location, birthday: d.birthday};
+                existingID = user[0].userID;
+            }
+            else {
+                query = "INSERT INTO user (mInitial, fName, lName, biography, location, birthday) VALUES (?)";
+                input = [d.mInitial, d.fName, d.lName, d.biography, d.location, d.birthday];
+            }
         }
         else if (isPostCsv) {
-            query = "INSERT INTO post (likeCount, location, content, photoURL, userID, date, eventID, groupID, trendID) VALUES (?)";
-            input = [d.likeCount, d.location, d.content, d.photoURL, d.userID, d.date, d.eventID, d.groupID, d.trendID];
+            const [post] = await con.query("SELECT postID FROM post WHERE userID = ? AND content = ?", [d.userID, d.content]);
+
+            if (post.length > 0) {
+                query = "UPDATE post SET ? WHERE postID = ?";
+                input = { likeCount: d.likeCount, location: d.location, content: d.content, photoURL: d.photoURL, userID: d.userID, date: d.date, eventID: d.eventID, groupID: d.groupID, trendID: d.trendID };
+                existingID = post[0].postID
+            }
+            else {
+                query = "INSERT INTO post (likeCount, location, content, photoURL, userID, date, eventID, groupID, trendID) VALUES (?)";
+                input = [d.likeCount, d.location, d.content, d.photoURL, d.userID, d.date, d.eventID, d.groupID, d.trendID];
+            }
         }
         else if (isCommentCsv) {
-            query = "INSERT INTO comment (userID, content, numLikes, date, postID) VALUES (?)";
-            input = [d.userID, d.content, d.numLikes, d.date, d.postID]
+            const [comment] = await con.query("SELECT commentID FROM comment WHERE userID = ? AND content = ?", [d.userID, d.content]);
+
+            if (comment.length > 0) {
+                query = "UPDATE comment SET ? WHERE commentID = ?";
+                input = { userID: d.userID, content: d.content, numLikes: d.numLikes, date: d.date, postID: d.postID };
+                existingID = comment[0].commentID;
+            }
+            else {
+                query = "INSERT INTO comment (userID, content, numLikes, date, postID) VALUES (?)";
+                input = [d.userID, d.content, d.numLikes, d.date, d.postID];
+            }
         }
 
         try {
-            await con.query(query, [input]);
-            insertedRows++;
+            if (existingID === null) {
+                await con.query(query, [input]);
+                insertedRows++;
+            }
+            else {
+                await con.query(query, [input, existingID]);
+                updatedRows++;
+            }
         }
         catch (err) {
             return err.message;
@@ -69,28 +104,45 @@ app.post("/import", async (req, res) => {
     }))
 
     const errors = results.filter(result => result !== undefined);
-    res.render("import", { insertedRows, errors});
+    res.render("import", { insertedRows, updatedRows, errors});
 })
 
 app.get("/users", async (req, res) => {
-    const [users] = await con.query("SELECT * FROM user");
-    const [posts] = await con.query("SELECT * FROM post");
+    const [results] = await con.query(
+        "SELECT user.userID, user.fName, user.mInitial, user.lName, user.biography, user.location AS userLocation, user.birthday, " + 
+        "post.postID, post.likeCount, post.content, post.photoURL, post.date, post.location AS postLocation " + 
+        "FROM user LEFT JOIN post ON user.userID = post.userID"
+    );
 
-    res.render("users", { users, posts });
+    res.render("users", { results });
 })
 
 app.get("/posts", async (req, res) => {
-    const [posts] = await con.query("SELECT * FROM post");
-    const [comments] = await con.query("SELECT * FROM comment");
+    const [results] = await con.query(
+        "SELECT postUser.fName AS postFName, postUser.mInitial AS postMInitial, postUser.lName AS postLName, " +
+        "commentUser.fName AS commentFName, commentUser.mInitial AS commentMInitial, commentUser.lName AS commentLName, " +
+        "post.postID, post.likeCount, post.content AS postContent, post.photoURL, post.date AS postDate, post.location, " +
+        "comment.commentID, comment.userID, comment.content AS commentContent, comment.date AS commentDate, comment.numLikes " +
+        "FROM post LEFT JOIN comment " +
+        "ON post.postID = comment.postID " +
+        "INNER JOIN user postUser " +
+        "ON postUser.userID = post.userID " +
+        "LEFT JOIN user commentUser " +
+        "ON commentUser.userID = comment.userID"
+    );
 
-    res.render("posts", { posts, comments });
+    res.render("posts", { results });
 })
 
 app.get("/comments", async (req, res) => {
-    const [comments] = await con.query("SELECT * FROM comment");
-    const [users] = await con.query("SELECT * FROM user");
+    const [results] = await con.query(
+        "SELECT user.userID, user.fName, user.mInitial, user.lName, user.biography, user.location AS userLocation, user.birthday, " +
+        "post.postID, post.likeCount, post.content AS postContent, post.photoURL, post.date AS postDate, post.location, " +
+        "comment.commentID, comment.userID, comment.content AS commentContent, comment.date AS commentDate, comment.numLikes " + 
+        "FROM comment INNER JOIN user ON user.userID = comment.userID INNER JOIN post ON post.postID = comment.postID"
+    );
 
-    res.render("comments", { comments, users });
+    res.render("comments", { results });
 })
 
 app.listen(3000, function() {

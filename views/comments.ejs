@@ -96,63 +96,77 @@
     </style>
 </head>
 <body>
-    <div class="banner">
-        <img src="UpbeatLogoBold75x75.jpg" alt="Website Logo">
-        <h1 class="header">Comments</h1>
-        <div class="navigation">
-          <a class="navigation-item" href="http://localhost:3000/import">IMPORT</a>
-          <a class="navigation-item" href="http://localhost:3000/users">USERS</a>
-          <a class="navigation-item" href="http://localhost:3000/posts">POSTS</a>
-          <a class="navigation-item" href="http://localhost:3000/comments">COMMENTS</a>
-        </div>
+  <div class="banner">
+    <img src="UpbeatLogoBold75x75.jpg" alt="Website Logo">
+    <h1 class="header">Comments</h1>
+    <div class="navigation">
+      <a class="navigation-item" href="http://localhost:3000/import">IMPORT</a>
+      <a class="navigation-item" href="http://localhost:3000/users">USERS</a>
+      <a class="navigation-item" href="http://localhost:3000/posts">POSTS</a>
+      <a class="navigation-item" href="http://localhost:3000/comments">COMMENTS</a>
     </div>
-    <div class="table-wrapper">
-        <table>
-            <tr>
-                <th>Comment ID</th>
+  </div>
+  <div class="table-wrapper">
+    <table>
+      <tr>
+        <th>Comment ID</th>
+        <th>Content</th>
+        <th>Like Count</th>
+        <th>Date</th>
+      </tr>
+      <% results.map(result => { %>
+        <tr>
+          <td><%= result.commentID %></td>
+          <td><%= result.commentContent %></td>
+          <td><%= result.numLikes %></td>
+          <td><%= result.commentDate %></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td colspan ="3">
+            <table>
+              <tr>
                 <th>User ID</th>
-                <th>Content</th>
-                <th>Like Count</th>
-                <th>Date</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Middle Initial</th>
+                <th>Biography</th>
+                <th>Location</th>
+                <th>Birthday</th>
+              </tr>
+              <tr>
+                <td><%= result.userID %></td>
+                <td><%= result.fName %></td>
+                <td><%= result.lName %></td>
+                <td><%= result.mInitial %></td>
+                <td><%= result.biography %></td>
+                <td><%= result.location %></td>
+                <td><%= result.birthday.toDateString().slice(4, 16) %></td>
+              </tr>
+            </table>
+
+            <table>
+              <tr>
                 <th>Post ID</th>
-            </tr>
-            <% comments.map(comment => { %>
-                <tr>
-                    <td><%= comment.commentID %></td>
-                    <td><%= comment.userID %></td>
-                    <td><%= comment.content %></td>
-                    <td><%= comment.numLikes %></td>
-                    <td><%= comment.date %></td>
-                    <td><%= comment.postID %></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td colspan ="7">
-                        <table>
-                            <tr>
-                                <th>User ID</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Middle Initial</th>
-                                <th>Biography</th>
-                                <th>Location</th>
-                                <th>Birthday</th>
-                            </tr>
-                            <% const user = users.find(user => user.userID === comment.userID) %>
-                            <tr>
-                                <td><%= user.userID %></td>
-                                <td><%= user.fName %></td>
-                                <td><%= user.lName %></td>
-                                <td><%= user.mInitial %></td>
-                                <td><%= user.biography %></td>
-                                <td><%= user.location %></td>
-                                <td><%= user.birthday %></td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            <% }) %>
-        </table>
-    </div>
+                <th>Content</th>
+                <th>Photo URL</th>
+                <th>Like Count</th>
+                <th>Location</th>
+                <th>Date</th>
+              </tr>
+              <tr>
+                <td><%= result.postID %></td>
+                <td><%= result.postContent %></td>
+                <td><%= result.photoURL %></td>
+                <td><%= result.likeCount %></td>
+                <td><%= result.location %></td>
+                <td><%= result.postDate %></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      <% }) %>
+    </table>
+  </div>
 </body>
 </html>

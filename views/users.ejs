@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Users</title>
+  <title>results</title>
   <link href="https://fonts.googleapis.com/css?family=Montserrat:700&display=swap" rel="stylesheet">
   <style>
     /* Styling for the banner */
@@ -55,7 +55,7 @@
       margin-left: 20px;
     }
 
-    /* Styling for the user table */
+    /* Styling for the result table */
     table {
       border-collapse: collapse;
       margin: 20px auto;
@@ -98,10 +98,10 @@
 <body>
   <div class="banner">
     <img src="UpbeatLogoBold75x75.jpg" alt="Website Logo">
-    <h1 class="header">Users</h1>
+    <h1 class="header">results</h1>
     <div class="navigation">
       <a class="navigation-item" href="http://localhost:3000/import">IMPORT</a>
-      <a class="navigation-item" href="http://localhost:3000/users">USERS</a>
+      <a class="navigation-item" href="http://localhost:3000/results">USERS</a>
       <a class="navigation-item" href="http://localhost:3000/posts">POSTS</a>
       <a class="navigation-item" href="http://localhost:3000/comments">COMMENTS</a>
     </div>
@@ -120,48 +120,47 @@
         </tr>
       </thead>
       <tbody>
-        <% users.map(user => { %>
-          <tr>
-            <td><%= user.userID %></td>
-            <td><%= user.fName %></td>
-            <td><%= user.mInitial %></td>
-            <td><%= user.lName %></td>
-            <td><%= user.biography %></td>
-            <td><%= user.location %></td>
-            <td><%= user.birthday.toDateString().slice(4, 16) %></td>
-          </tr>
-          <% if (posts.find(post => post.userID === user.userID)) { %>
+        <% let currentUserID %>
+        <% results.map(result => { %>
+          <% if (currentUserID !== result.userID) { %>
+            <tr>
+              <td><%= result.userID %></td>
+              <td><%= result.fName %></td>
+              <td><%= result.mInitial %></td>
+              <td><%= result.lName %></td>
+              <td><%= result.biography %></td>
+              <td><%= result.userLocation %></td>
+              <td><%= result.birthday.toDateString().slice(4, 16) %></td>
+            </tr>
+          
+            <% currentUserID = result.userID %>
+            <% if (result.postID) { %>
               <tr>
-                  <td></td>
-                  <td colspan="9">
-                      <table>
-                          <tr>
-                              <th>Post ID</th>
-                              <th>Like Count</th>
-                              <th>Location</th>
-                              <th>Content</th>
-                              <th>Photo URL</th>
-                              <th>Date</th>
-                              <th>Event ID</th>
-                              <th>Group ID</th>
-                              <th>Trend ID</th>
-                          </tr>
-                          <% posts.filter(post => post.userID === user.userID).map(post => { %>
-                              <tr>
-                                  <td><%= post.postID %></td>
-                                  <td><%= post.likeCount %></td>
-                                  <td><%= post.location %></td>
-                                  <td><%= post.content %></td>
-                                  <td><%= post.photoURL %></td>
-                                  <td><%= post.date %></td>
-                                  <td><%= post.eventID %></td>
-                                  <td><%= post.groupID %></td>
-                                  <td><%= post.trendID %></td>
-                              </tr>
-                          <% }) %>
-                      </table>
-                  </td>
+                <td></td>
+                <td colspan="6">
+                  <table>
+                    <tr>
+                      <th>Post ID</th>
+                      <th>Like Count</th>
+                      <th>Location</th>
+                      <th>Content</th>
+                      <th>Photo URL</th>
+                      <th>Date</th>
+                    </tr>
+                    <% results.filter(r => r.postID !== null && r.userID == currentUserID).map(postResult => { %>
+                      <tr>
+                        <td><%= postResult.postID %></td>
+                        <td><%= postResult.likeCount %></td>
+                        <td><%= postResult.postLocation %></td>
+                        <td><%= postResult.content %></td>
+                        <td><%= postResult.photoURL %></td>
+                        <td><%= postResult.date %></td>
+                      </tr>
+                    <% }) %>
+                  </table>
+                </td>
               </tr>
+            <% } %>
           <% } %>
         <% }) %>
       </tbody>

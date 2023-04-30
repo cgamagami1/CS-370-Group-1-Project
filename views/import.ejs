@@ -132,7 +132,10 @@
             <button>Submit</button>
         </form>
         <% if (insertedRows > 0) { %>
-            <p>Successfully inserted <%=insertedRows%> rows!</p>
+            <p>Successfully inserted <%= insertedRows %> rows!</p>
+        <% } %>
+        <% if (updatedRows > 0) { %>
+            <p>Successfully updated <%= updatedRows %> rows!</p>
         <% } %>
         <% errors.map(error => { %>
             <p>Could not insert row: <%= error %></p>
